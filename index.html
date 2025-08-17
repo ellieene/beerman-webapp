@@ -12,12 +12,19 @@
     .product { display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px 10px; margin: 5px 0; border-radius: 8px; font-size: 18px; }
     .product span.name { flex: 1 1 auto; min-width: 120px; margin-right: 10px; word-break: break-word; }
     .btns { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
-    .btns button { width: 45px; height: 45px; font-size: 22px; border-radius: 8px; border: none; background: #007bff; color: white; }
+    .btns button { width: 45px; height: 45px; font-size: 22px; border-radius: 8px; border: none; background: #007bff; color: white; cursor:pointer; }
     .btns span { min-width: 30px; text-align: center; font-size: 18px; display: inline-block; }
-    .send-btn { display: block; width: 100%; padding: 15px 0; font-size: 20px; background: #28a745; color: white; border: none; border-radius: 8px; margin-top: 30px; }
-    #admin-panel { display:none; margin-top:30px; padding:15px; background:#ffeeba; border-radius:8px; }
-    #admin-panel input, #admin-panel select { padding:5px; margin-left:5px; }
-    .remove-btn { margin-left:10px; background:#dc3545; }
+    .send-btn { display: block; width: 100%; padding: 15px 0; font-size: 20px; background: #28a745; color: white; border: none; border-radius: 8px; margin-top: 30px; cursor:pointer; }
+    
+    /* Админская панель */
+    #admin-panel { display:none; margin-top:30px; padding:20px; background:#ffffff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+    #admin-panel h2 { color:#e74c3c; text-align:center; font-size:26px; margin-bottom:20px; }
+    #admin-panel input, #admin-panel select { padding:5px; margin-left:5px; border-radius:6px; border:1px solid #ccc; }
+    #admin-panel button { cursor:pointer; border:none; border-radius:6px; padding:5px 10px; }
+    .add-cat-btn { background:#27ae60; color:white; }
+    .add-prod-btn { background:#3498db; color:white; }
+    .remove-btn { background:#dc3545; color:white; margin-left:10px; }
+    #admin-products div { background:#f8f9fa; padding:5px 10px; border-radius:6px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center; }
   </style>
 </head>
 <body>
@@ -25,188 +32,180 @@
   <div id="catalog"></div>
   <button class="send-btn" onclick="sendOrder()">✅ Отправить заказ</button>
 
-<!-- Админская панель -->
-<div id="admin-panel" style="display:none; margin-top:30px; padding:15px; background:#ffeeba; border-radius:8px;">
-    <h2>⚙️ Админская панель</h2>
-  
-    <div style="margin-bottom:10px;">
-      <label>Категория:
-        <select id="admin-category"></select>
-        <button onclick="addCategory()">Добавить категорию</button>
-      </label>
-      <input type="text" id="new-category" placeholder="Новая категория">
-    </div>
-  
-    <div style="margin-bottom:10px;">
-      <label>Название товара:
-        <input type="text" id="admin-name" placeholder="Молоко">
-      </label>
-    </div>
-  
-    <div style="margin-bottom:10px;">
-      <label>Единицы:
-        <select id="admin-unit">
+  <!-- Админская панель -->
+  <div id="admin-panel">
+      <h2>🛠️ BEERMAN ⚡</h2>
+
+      <div style="margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+        <label style="flex:1;">Категория:
+          <select id="admin-category"></select>
+        </label>
+        <input type="text" id="new-category" placeholder="Новая категория" style="flex:1;">
+        <button onclick="addCategory()" class="add-cat-btn">➕ Добавить</button>
+      </div>
+
+      <div style="margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+        <input type="text" id="admin-name" placeholder="Название товара" style="flex:2;">
+        <select id="admin-unit" style="flex:1;">
           <option value="шт">шт</option>
           <option value="кг">кг</option>
           <option value="л">л</option>
         </select>
-      </label>
-    </div>
-  
-    <button onclick="addProduct()">Добавить товар</button>
-  
-    <h3>Товары</h3>
-    <div id="admin-products"></div>
+        <button onclick="addProduct()" class="add-prod-btn">✅ Добавить</button>
+      </div>
+
+      <h3 style="color:#2c3e50; font-size:20px; margin-bottom:10px;">Товары 📝</h3>
+      <div id="admin-products"></div>
   </div>
-  
-  <script>
-  let order = {};
-  let catalogData = {};
-  let locked = {};
-  
-  function update(product, delta) {
-    if (locked[product]) return;
-    locked[product] = true;
-  
-    if (!(product in order)) order[product] = 0;
-    let newValue = order[product] + delta;
-    if (newValue < 0) newValue = 0;
-  
-    if (newValue !== order[product]) {
-      order[product] = newValue;
-      document.getElementById(product).innerText = order[product];
-    }
-  
-    locked[product] = false;
+
+<script>
+let order = {};
+let catalogData = {};
+let locked = {};
+
+function update(product, delta) {
+  if (locked[product]) return;
+  locked[product] = true;
+
+  if (!(product in order)) order[product] = 0;
+  let newValue = order[product] + delta;
+  if (newValue < 0) newValue = 0;
+
+  if (newValue !== order[product]) {
+    order[product] = newValue;
+    document.getElementById(product).innerText = order[product];
   }
-  
-  function sendOrder() {
-    let items = [];
-    for (let p in order) if (order[p] > 0) items.push(`${p}: ${order[p]}`);
-    if (items.length === 0) { alert("Корзина пуста!"); return; }
-  
-    Telegram.WebApp.sendData(JSON.stringify(order));
-    Telegram.WebApp.close();
-  }
-  
-  async function renderCatalog() {
-    const response = await fetch('catalog.json');
-    catalogData = await response.json();
-  
-    const user = Telegram.WebApp.initDataUnsafe.user;
-    const container = document.getElementById("catalog");
-    const adminPanel = document.getElementById("admin-panel");
-  
-    if (user && user.username === "ellieen") {
-      // Админ видит только панель
-      container.style.display = "none";
-      document.querySelector(".send-btn").style.display = "none";
-      adminPanel.style.display = "block";
-  
-      renderAdminCategories();
-      renderAdminProducts();
-    } else {
-      // Обычный пользователь
-      adminPanel.style.display = "none";
-      container.style.display = "block";
-      document.querySelector(".send-btn").style.display = "block";
-  
-      container.innerHTML = "";
-      for (const category in catalogData) {
-        const h2 = document.createElement("h2");
-        h2.textContent = category;
-        container.appendChild(h2);
-  
-        catalogData[category].forEach(product => {
-          const div = document.createElement("div");
-          div.className = "product";
-  
-          const nameSpan = document.createElement("span");
-          nameSpan.className = "name";
-          nameSpan.textContent = `${product.name} (${product.unit})`;
-  
-          const btns = document.createElement("div");
-          btns.className = "btns";
-  
-          const minus = document.createElement("button");
-          minus.textContent = "-";
-          minus.onclick = () => update(product.name, -1);
-  
-          const count = document.createElement("span");
-          count.id = product.name;
-          count.textContent = "0";
-  
-          const plus = document.createElement("button");
-          plus.textContent = "+";
-          plus.onclick = () => update(product.name, 1);
-  
-          btns.appendChild(minus);
-          btns.appendChild(count);
-          btns.appendChild(plus);
-  
-          div.appendChild(nameSpan);
-          div.appendChild(btns);
-  
-          container.appendChild(div);
-        });
-      }
-    }
-  }
-  
-  // --- Админ функции ---
-  function renderAdminCategories() {
-    const catSelect = document.getElementById("admin-category");
-    catSelect.innerHTML = "";
+
+  locked[product] = false;
+}
+
+function sendOrder() {
+  let items = [];
+  for (let p in order) if (order[p] > 0) items.push(`${p}: ${order[p]}`);
+  if (items.length === 0) { alert("Корзина пуста!"); return; }
+
+  Telegram.WebApp.sendData(JSON.stringify(order));
+  Telegram.WebApp.close();
+}
+
+async function renderCatalog() {
+  const response = await fetch('catalog.json');
+  catalogData = await response.json();
+
+  const user = Telegram.WebApp.initDataUnsafe.user;
+  const container = document.getElementById("catalog");
+  const adminPanel = document.getElementById("admin-panel");
+
+  if (user && user.username === "ellieene") {
+    container.style.display = "none";
+    document.querySelector(".send-btn").style.display = "none";
+    adminPanel.style.display = "block";
+
+    renderAdminCategories();
+    renderAdminProducts();
+  } else {
+    adminPanel.style.display = "none";
+    container.style.display = "block";
+    document.querySelector(".send-btn").style.display = "block";
+
+    container.innerHTML = "";
     for (const category in catalogData) {
-      const opt = document.createElement("option");
-      opt.value = category;
-      opt.textContent = category;
-      catSelect.appendChild(opt);
-    }
-  }
-  
-  function renderAdminProducts() {
-    const div = document.getElementById("admin-products");
-    div.innerHTML = "";
-    for (const category in catalogData) {
+      const h2 = document.createElement("h2");
+      h2.textContent = category;
+      container.appendChild(h2);
+
       catalogData[category].forEach(product => {
-        const pDiv = document.createElement("div");
-        pDiv.textContent = `${category} → ${product.name} (${product.unit}) `;
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "❌";
-        delBtn.onclick = () => {
-          catalogData[category] = catalogData[category].filter(p => p.name !== product.name);
-          renderAdminProducts();
-          renderAdminCategories();
-        };
-        pDiv.appendChild(delBtn);
-        div.appendChild(pDiv);
+        const div = document.createElement("div");
+        div.className = "product";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "name";
+        nameSpan.textContent = `${product.name} (${product.unit})`;
+
+        const btns = document.createElement("div");
+        btns.className = "btns";
+
+        const minus = document.createElement("button");
+        minus.textContent = "-";
+        minus.onclick = () => update(product.name, -1);
+
+        const count = document.createElement("span");
+        count.id = product.name;
+        count.textContent = "0";
+
+        const plus = document.createElement("button");
+        plus.textContent = "+";
+        plus.onclick = () => update(product.name, 1);
+
+        btns.appendChild(minus);
+        btns.appendChild(count);
+        btns.appendChild(plus);
+
+        div.appendChild(nameSpan);
+        div.appendChild(btns);
+
+        container.appendChild(div);
       });
     }
   }
-  
-  function addCategory() {
-    const name = document.getElementById("new-category").value.trim();
-    if (!name) return alert("Введите название категории");
-    if (!catalogData[name]) catalogData[name] = [];
-    renderAdminCategories();
+}
+
+// --- Админ функции ---
+function renderAdminCategories() {
+  const catSelect = document.getElementById("admin-category");
+  catSelect.innerHTML = "";
+  for (const category in catalogData) {
+    const opt = document.createElement("option");
+    opt.value = category;
+    opt.textContent = category;
+    catSelect.appendChild(opt);
   }
-  
-  function addProduct() {
-    const name = document.getElementById("admin-name").value.trim();
-    const category = document.getElementById("admin-category").value;
-    const unit = document.getElementById("admin-unit").value;
-    if (!name || !category) return alert("Введите название и категорию");
-  
-    if (!catalogData[category]) catalogData[category] = [];
-    catalogData[category].push({ name, unit });
-  
-    renderAdminProducts();
-    renderAdminCategories();
+}
+
+function renderAdminProducts() {
+  const div = document.getElementById("admin-products");
+  div.innerHTML = "";
+  for (const category in catalogData) {
+    catalogData[category].forEach(product => {
+      const pDiv = document.createElement("div");
+      pDiv.textContent = `${category} → ${product.name} (${product.unit})`;
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "❌";
+      delBtn.className = "remove-btn";
+      delBtn.onclick = () => {
+        catalogData[category] = catalogData[category].filter(p => p.name !== product.name);
+        renderAdminProducts();
+        renderAdminCategories();
+      };
+      pDiv.appendChild(delBtn);
+      div.appendChild(pDiv);
+    });
   }
-  
-  // --- старт ---
-  window.onload = renderCatalog;
-  </script>
+}
+
+function addCategory() {
+  const name = document.getElementById("new-category").value.trim();
+  if (!name) return alert("Введите название категории");
+  if (!catalogData[name]) catalogData[name] = [];
+  renderAdminCategories();
+  document.getElementById("new-category").value = "";
+}
+
+function addProduct() {
+  const name = document.getElementById("admin-name").value.trim();
+  const category = document.getElementById("admin-category").value;
+  const unit = document.getElementById("admin-unit").value;
+  if (!name || !category) return alert("Введите название и категорию");
+
+  if (!catalogData[category]) catalogData[category] = [];
+  catalogData[category].push({ name, unit });
+
+  renderAdminProducts();
+  renderAdminCategories();
+  document.getElementById("admin-name").value = "";
+}
+
+window.onload = renderCatalog;
+</script>
 </body>
 </html>
