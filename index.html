@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Beerman Заказы</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 10px;
+    }
+    h2 { margin-top: 20px; }
+    .product {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 6px;
+    }
+    .btns button {
+      width: 30px;
+      height: 30px;
+      font-size: 18px;
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛒 Заказ продуктов</h1>
+
+  <h2>🥛 Молочные продукты</h2>
+  <div class="product">
+    <span>Кефир (л)</span>
+    <div class="btns">
+      <button onclick="update('Кефир (л)', -1)">-</button>
+      <span id="Кефир (л)">0</span>
+      <button onclick="update('Кефир (л)', 1)">+</button>
+    </div>
+  </div>
+  <div class="product">
+    <span>Творог (кг)</span>
+    <div class="btns">
+      <button onclick="update('Творог (кг)', -1)">-</button>
+      <span id="Творог (кг)">0</span>
+      <button onclick="update('Творог (кг)', 1)">+</button>
+    </div>
+  </div>
+
+  <h2>🥩 Мясо</h2>
+  <div class="product">
+    <span>Куриное бедро (кг)</span>
+    <div class="btns">
+      <button onclick="update('Куриное бедро (кг)', -1)">-</button>
+      <span id="Куриное бедро (кг)">0</span>
+      <button onclick="update('Куриное бедро (кг)', 1)">+</button>
+    </div>
+  </div>
+  <div class="product">
+    <span>Филе куриное (кг)</span>
+    <div class="btns">
+      <button onclick="update('Филе куриное (кг)', -1)">-</button>
+      <span id="Филе куриное (кг)">0</span>
+      <button onclick="update('Филе куриное (кг)', 1)">+</button>
+    </div>
+  </div>
+
+  <div style="margin-top:30px;">
+    <button onclick="sendOrder()" style="padding:10px 20px;font-size:18px;">✅ Отправить заказ</button>
+  </div>
+
+  <script>
+    let order = {};
+
+    function update(product, delta) {
+      if (!(product in order)) order[product] = 0;
+      order[product] = Math.max(0, order[product] + delta);
+      document.getElementById(product).innerText = order[product];
+    }
+
+    function sendOrder() {
+      let items = [];
+      for (let p in order) {
+        if (order[p] > 0) items.push(`${p}: ${order[p]}`);
+      }
+      if (items.length === 0) {
+        alert("Корзина пуста!");
+        return;
+      }
+
+      let text = "📦 Новый заказ:\n" + items.join("\n");
+
+      // Отправляем данные обратно в бота
+      Telegram.WebApp.sendData(JSON.stringify(order));
+
+      // Можно сразу закрыть
+      Telegram.WebApp.close();
+    }
+  </script>
+</body>
+</html>
