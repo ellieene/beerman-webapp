@@ -127,18 +127,18 @@
 
   <script>
     let order = {};
-    let lastTap = {};  // для защиты от двойного тапа
+    let locked = {};  // блокировка для каждой кнопки
   
     function update(product, delta) {
-      const now = Date.now();
-      // если предыдущий тап был меньше 300ms назад — игнорируем
-      if (lastTap[product] && now - lastTap[product] < 300) return;
-  
-      lastTap[product] = now;
+      if (locked[product]) return;  // если заблокировано, игнорируем
+      locked[product] = true;       // блокируем
   
       if (!(product in order)) order[product] = 0;
       order[product] = Math.max(0, order[product] + delta);
       document.getElementById(product).innerText = order[product];
+  
+      // снимаем блокировку через короткое время
+      setTimeout(() => { locked[product] = false; }, 300); // 300ms
     }
   
     function sendOrder() {
