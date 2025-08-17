@@ -22,32 +22,40 @@
     }
     .product {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       background: white;
-      padding: 15px 10px;
+      padding: 12px 10px;
       margin: 5px 0;
       border-radius: 8px;
       font-size: 18px;
+    }
+    .product span.name {
+      flex: 1 1 auto;
+      min-width: 120px;
+      margin-right: 10px;
+      word-break: break-word;
     }
     .btns {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex: 0 0 auto;
     }
     .btns button {
-      width: 80px;
-      height: 80px;
-      font-size: 26px;
+      width: 45px;
+      height: 45px;
+      font-size: 22px;
       border-radius: 8px;
       border: none;
       background: #007bff;
       color: white;
     }
     .btns span {
-      min-width: 40px;
+      min-width: 30px;
       text-align: center;
-      font-size: 24px;
+      font-size: 18px;
       display: inline-block;
     }
     .send-btn {
@@ -61,6 +69,19 @@
       border-radius: 8px;
       margin-top: 30px;
     }
+    @media (max-width: 400px) {
+      .btns button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+      .btns span {
+        font-size: 16px;
+      }
+      .product span.name {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -68,7 +89,7 @@
 
   <h2>🥛 Молочные продукты</h2>
   <div class="product">
-    <span>Кефир (л)</span>
+    <span class="name">Кефир (л)</span>
     <div class="btns">
       <button onclick="update('Кефир (л)', -1)">-</button>
       <span id="Кефир (л)">0</span>
@@ -76,7 +97,7 @@
     </div>
   </div>
   <div class="product">
-    <span>Творог (кг)</span>
+    <span class="name">Творог (кг)</span>
     <div class="btns">
       <button onclick="update('Творог (кг)', -1)">-</button>
       <span id="Творог (кг)">0</span>
@@ -86,7 +107,7 @@
 
   <h2>🥩 Мясо</h2>
   <div class="product">
-    <span>Куриное бедро (кг)</span>
+    <span class="name">Куриное бедро (кг)</span>
     <div class="btns">
       <button onclick="update('Куриное бедро (кг)', -1)">-</button>
       <span id="Куриное бедро (кг)">0</span>
@@ -94,7 +115,7 @@
     </div>
   </div>
   <div class="product">
-    <span>Филе куриное (кг)</span>
+    <span class="name">Филе куриное (кг)</span>
     <div class="btns">
       <button onclick="update('Филе куриное (кг)', -1)">-</button>
       <span id="Филе куриное (кг)">0</span>
