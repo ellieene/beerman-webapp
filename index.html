@@ -127,13 +127,20 @@
 
   <script>
     let order = {};
-
+    let lastTap = {};  // для защиты от двойного тапа
+  
     function update(product, delta) {
+      const now = Date.now();
+      // если предыдущий тап был меньше 300ms назад — игнорируем
+      if (lastTap[product] && now - lastTap[product] < 300) return;
+  
+      lastTap[product] = now;
+  
       if (!(product in order)) order[product] = 0;
       order[product] = Math.max(0, order[product] + delta);
       document.getElementById(product).innerText = order[product];
     }
-
+  
     function sendOrder() {
       let items = [];
       for (let p in order) {
