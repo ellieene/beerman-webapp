@@ -130,15 +130,22 @@
     let locked = {};  // блокировка для каждой кнопки
   
     function update(product, delta) {
-      if (locked[product]) return;  // если заблокировано, игнорируем
-      locked[product] = true;       // блокируем
+      if (locked[product]) return; // если уже заблокировано, игнорируем
   
+      locked[product] = true;  // блокируем кнопку
       if (!(product in order)) order[product] = 0;
-      order[product] = Math.max(0, order[product] + delta);
-      document.getElementById(product).innerText = order[product];
   
-      // снимаем блокировку через короткое время
-      setTimeout(() => { locked[product] = false; }, 300); // 300ms
+      let newValue = order[product] + delta;
+      if (newValue < 0) newValue = 0;
+  
+      // только если значение реально меняется
+      if (newValue !== order[product]) {
+        order[product] = newValue;
+        document.getElementById(product).innerText = order[product];
+      }
+  
+      // снимаем блокировку сразу после обновления (синхронно)
+      locked[product] = false;
     }
   
     function sendOrder() {
