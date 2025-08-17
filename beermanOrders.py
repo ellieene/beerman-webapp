@@ -19,7 +19,7 @@ def menu_keyboard():
         keyboard=[[
             KeyboardButton(
                 text="🛒 Сделать заказ",
-                web_app=WebAppInfo(url="https://YOUR-SITE/index.html")  # <-- вставь ссылку на index.html
+                web_app=WebAppInfo(url="https://ellieene.github.io/beerman-webapp/index.html?v=2")  # <-- вставь ссылку на index.html
             )
         ]],
         resize_keyboard=True
