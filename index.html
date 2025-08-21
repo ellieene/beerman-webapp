@@ -113,14 +113,8 @@ function sendOrder() {
   }
 
   let message = items.join("\n");
-  console.log("Отправляю сообщение:", message);
+  sendOrderToTelegram(message);
 
-  if (window.Telegram && Telegram.WebApp) {
-    Telegram.WebApp.sendData(message);
-    Telegram.WebApp.close();
-  } else {
-    alert("⚠️ Telegram WebApp API недоступен (ты открыл не в Telegram).");
-  }
 }
 
 async function renderCatalog() {
