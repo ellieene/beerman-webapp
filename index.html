@@ -80,9 +80,19 @@ function update(product, delta) {
 }
 
 const BOT_TOKEN = "8416977089:AAG49nmrwX1RuCSxJL3zlqaTgeLLa8jgs3Y";
-const CHAT_ID = "743849466";
 
 function sendOrderToTelegram(orderText) {
+  const user = Telegram.WebApp.initDataUnsafe.user;
+    let chatId;
+
+    if (user.username === "ellieene") {
+        chatId = "743849466";
+    } else if (user.username === "Aleksei_Aleksandrovich1") {
+        chatId = "380680905";
+    } else {
+        console.error("Неизвестный пользователь, сообщение не отправлено");
+        return;
+    }
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
