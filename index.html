@@ -79,6 +79,23 @@ function update(product, delta) {
   locked[product] = false;
 }
 
+const BOT_TOKEN = "8416977089:AAG49nmrwX1RuCSxJL3zlqaTgeLLa8jgs3Y";
+const CHAT_ID = "ellieene";
+
+function sendOrderToTelegram(orderText) {
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: orderText
+        })
+    })
+    .then(res => res.json())
+    .then(data => console.log("Отправлено:", data))
+    .catch(err => console.error(err));
+}
+
 function sendOrder() {
   let items = [];
 
