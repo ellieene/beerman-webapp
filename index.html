@@ -28,8 +28,8 @@
   </style>
 </head>
 <body>
-  <h1>🛒 Заказ продуктов</h1>
   <div id="catalog"></div>
+  <h1>🛒 Заказ продуктов</h1>
   <button class="send-btn" onclick="sendOrder()">✅ Отправить заказ</button>
 
   <!-- Админская панель -->
@@ -96,14 +96,14 @@ async function renderCatalog() {
   const container = document.getElementById("catalog");
   const adminPanel = document.getElementById("admin-panel");
 
-  if (user && user.username === "ellieene") {
+  if (user && user.username === "ellieen") {
     container.style.display = "none";
     document.querySelector(".send-btn").style.display = "none";
     adminPanel.style.display = "block";
 
     renderAdminCategories();
     renderAdminProducts();
-  } else {
+  } else if (user.username === "ellieene") {
     adminPanel.style.display = "none";
     container.style.display = "block";
     document.querySelector(".send-btn").style.display = "block";
