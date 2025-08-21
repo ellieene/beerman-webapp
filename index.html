@@ -64,14 +64,19 @@ let catalogData = {};
 let locked = {};
 
 function update(product, delta) {
-  if (!(product.name in order)) order[product.name] = 0;
-  let newValue = order[product.name] + delta;
+  if (locked[product]) return;
+  locked[product] = true;
+
+  if (!(product in order)) order[product] = 0;
+  let newValue = order[product] + delta;
   if (newValue < 0) newValue = 0;
 
-  if (newValue !== order[product.name]) {
-    order[product.name] = newValue;
-    document.getElementById(product.name).innerText = order[product.name];
+  if (newValue !== order[product]) {
+    order[product] = newValue;
+    document.getElementById(product).innerText = order[product];
   }
+
+  locked[product] = false;
 }
 
 function sendOrder() {
