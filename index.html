@@ -124,6 +124,7 @@ function sendOrder() {
 
   let message = items.join("\n");
   sendOrderToTelegram(message);
+  Telegram.WebApp.close();
 
 }
 
