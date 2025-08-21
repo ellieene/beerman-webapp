@@ -83,15 +83,15 @@ const BOT_TOKEN = "8416977089:AAG49nmrwX1RuCSxJL3zlqaTgeLLa8jgs3Y";
 
 function sendOrderToTelegram(orderText) {
   const user = Telegram.WebApp.initDataUnsafe.user;
-    let chatId;
+  let chatId;
 
-    if (user.username === "ellieene") {
-        chatId = "743849466";
-    } else if (user.username === "Aleksei_Aleksandrovich1") {
-        chatId = "380680905";
-    } else {
-        console.error("Неизвестный пользователь, сообщение не отправлено");
-        return;
+  if (user.username === "ellieene") {
+      chatId = "743849466";
+  } else if (user.username === "Aleksei_Aleksandrovich1") {
+      chatId = "380680905";
+  } else {
+      console.error("Неизвестный пользователь, сообщение не отправлено");
+      return Promise.reject("Неизвестный пользователь");
     }
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
@@ -123,8 +123,13 @@ function sendOrder() {
   }
 
   let message = items.join("\n");
-  sendOrderToTelegram(message);
-  Telegram.WebApp.close();
+  sendOrderToTelegram(message)
+    .then(() => {
+      Telegram.WebApp.close(); // закрываем ТОЛЬКО после успеха
+    })
+    .catch(() => {
+      alert("Ошибка при отправке заказа 🚨");
+    });
 
 }
 
