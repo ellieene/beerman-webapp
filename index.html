@@ -64,27 +64,33 @@ let catalogData = {};
 let locked = {};
 
 function update(product, delta) {
-  if (locked[product]) return;
-  locked[product] = true;
-
-  if (!(product in order)) order[product] = 0;
-  let newValue = order[product] + delta;
+  if (!(product.name in order)) order[product.name] = 0;
+  let newValue = order[product.name] + delta;
   if (newValue < 0) newValue = 0;
 
-  if (newValue !== order[product]) {
-    order[product] = newValue;
-    document.getElementById(product).innerText = order[product];
+  if (newValue !== order[product.name]) {
+    order[product.name] = newValue;
+    document.getElementById(product.name).innerText = order[product.name];
   }
-
-  locked[product] = false;
 }
 
 function sendOrder() {
   let items = [];
-  for (let p in order) if (order[p] > 0) items.push(`${p}: ${order[p]}`);
-  if (items.length === 0) { alert("Корзина пуста!"); return; }
+  for (const category in catalogData) {
+    catalogData[category].forEach(product => {
+      if (order[product.name] > 0) {
+        items.push(`${product.name} - ${order[product.name]}${product.unit}`);
+      }
+    });
+  }
 
-  Telegram.WebApp.sendData(JSON.stringify(order));
+  if (items.length === 0) { 
+    alert("Корзина пуста!"); 
+    return; 
+  }
+
+  let message = items.join("\n");
+  Telegram.WebApp.sendData(message);
   Telegram.WebApp.close();
 }
 
