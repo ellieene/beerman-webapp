@@ -62,14 +62,26 @@
 let order = {};
 let catalogData = {};
 let locked = {};
+const productStep = {
+  "Икра красная": 0.5,
+  "Мортаделла": 0.5,
+  "Чука": 0.5
+};
 
 function update(product, delta) {
   if (locked[product]) return;
   locked[product] = true;
 
   if (!(product in order)) order[product] = 0;
-  let newValue = order[product] + delta;
+  
+  // Определяем шаг
+  const step = productStep[product] || 1;
+
+  let newValue = order[product] + delta * step;
   if (newValue < 0) newValue = 0;
+
+  // Округляем до 2 знаков после запятой, чтобы красиво отображалось
+  newValue = Math.round(newValue * 100) / 100;
 
   if (newValue !== order[product]) {
     order[product] = newValue;
