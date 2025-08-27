@@ -76,7 +76,8 @@ const productStep = {
   "Масло фритюрное": 15,
   "Огурцы маринованные": 8,
   "Макароны штат": 5,
-  "Тобика": 0.5
+  "Тобика": 0.5,
+  "Водоросли Хияши": 0.5
 };
 
 function update(product, delta) {
@@ -151,7 +152,7 @@ function sendOrder() {
   for (const category in catalogData) {
     catalogData[category].forEach(product => {
       if (order[product.name] > 0) {
-        items.push(`${product.name} - ${order[product.name]}${product.unit}`);
+        items.push(`${product.name} - ${order[product.name]} ${product.unit}`);
       }
     });
   }
