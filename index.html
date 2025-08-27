@@ -97,11 +97,26 @@ function update(product, delta) {
   if (newValue !== order[product]) {
     order[product] = newValue;
     document.getElementById(product).innerText = order[product];
+    saveOrder();   // ✅ сохраняем
   }
 
   locked[product] = false;
 }
+function saveOrder() {
+    localStorage.setItem("beermanOrder", JSON.stringify(order));
+}
+function loadOrder() {
+    const saved = localStorage.getItem("beermanOrder");
+    if (saved) {
+        order = JSON.parse(saved);
 
+        // отрисовать значения
+        for (const product in order) {
+            const el = document.getElementById(product);
+            if (el) el.innerText = order[product];
+        }
+    }
+}
 const BOT_TOKEN = "8416977089:AAG49nmrwX1RuCSxJL3zlqaTgeLLa8jgs3Y";
 
 function sendOrderToTelegram(orderText) {
@@ -148,6 +163,7 @@ function sendOrder() {
   let message = items.join("\n");
   sendOrderToTelegram(message)
     .then(() => {
+      localStorage.removeItem("beermanOrder");
       Telegram.WebApp.close(); // закрываем ТОЛЬКО после успеха
     })
     .catch(() => {
@@ -272,8 +288,10 @@ function addProduct() {
   renderAdminCategories();
   document.getElementById("admin-name").value = "";
 }
-
-window.onload = renderCatalog;
+window.onload = async () => {
+    await renderCatalog();
+    loadOrder();  // ✅ восстановление корзины
+};
 </script>
 </body>
 </html>
