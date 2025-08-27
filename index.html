@@ -120,18 +120,20 @@ function loadOrder() {
 const BOT_TOKEN = "8416977089:AAG49nmrwX1RuCSxJL3zlqaTgeLLa8jgs3Y";
 
 function sendOrderToTelegram(orderText) {
-  const user = Telegram.WebApp.initDataUnsafe.user;
-  let chatId;
+    const user = Telegram.WebApp.initDataUnsafe.user;
+    let chatId;
 
-  if (user.username === "ellieene") {
-      chatId = "743849466";
-  } else if (user.username === "Aleksei_Aleksandrovich1") {
-      chatId = "380680905";
-  } else {
-      console.error("Неизвестный пользователь, сообщение не отправлено");
-      return Promise.reject("Неизвестный пользователь");
+    if (user.username === "ellieene") {
+        chatId = "743849466";
+    } else if (user.username === "Aleksei_Aleksandrovich1") {
+        chatId = "380680905";
+    } else {
+        console.error("Неизвестный пользователь, сообщение не отправлено");
+        return Promise.reject("Неизвестный пользователь");
     }
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+
+    // 🔥 тут добавляем return
+    return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -139,9 +141,7 @@ function sendOrderToTelegram(orderText) {
             text: orderText
         })
     })
-    .then(res => res.json())
-    .then(data => console.log("Отправлено:", data))
-    .catch(err => console.error(err));
+        .then(res => res.json());
 }
 
 function sendOrder() {
