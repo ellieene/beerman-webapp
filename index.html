@@ -162,14 +162,16 @@ function sendOrder() {
   }
 
   let message = items.join("\n");
-  sendOrderToTelegram(message)
-    .then(() => {
-      localStorage.removeItem("beermanOrder");
-      Telegram.WebApp.close(); // закрываем ТОЛЬКО после успеха
-    })
-    .catch(() => {
-      alert("Ошибка при отправке заказа 🚨");
-    });
+    sendOrderToTelegram(message)
+        .then(data => {
+            console.log("✅ Успех:", data);
+            localStorage.removeItem("beermanOrder"); // очистка корзины
+            Telegram.WebApp.close(); // закрытие приложения
+        })
+        .catch(err => {
+            console.error("🚨 Ошибка:", err);
+            alert("Ошибка при отправке заказа 🚨");
+        });
 
 }
 
