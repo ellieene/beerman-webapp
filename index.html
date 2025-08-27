@@ -146,6 +146,7 @@ function sendOrderToTelegram(orderText) {
 
 function sendOrder() {
   let items = [];
+  items.push(`Едим вместе(Б2) \n Каменска 7`);
 
   for (const category in catalogData) {
     catalogData[category].forEach(product => {
