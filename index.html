@@ -30,6 +30,10 @@
 </head>
 <body>
   <h2 id="beerman">BEERMAN</h2>
+  <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
+      <button onclick="switchMode('store')">🏬 Склад</button>
+      <button onclick="switchMode('vegetables')">🥦 Овощи</button>
+  </div>
   <div id="catalog"></div>
   <button class="send-btn" onclick="sendOrder()">✅ Отправить заказ</button>
 
@@ -59,7 +63,36 @@
       <div id="admin-products"></div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
+
+async function loadVegetableCatalog() {
+    const response = await fetch("Экзо Фул Кухня.xlsx");
+    const arrayBuffer = await response.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data = XLSX.utils.sheet_to_json(sheet);
+
+    // допустим, в таблице есть колонки "Название" и "Ед.изм"
+    return data.map(row => ({
+        name: row["Название"],
+        unit: row["Ед.изм"]
+    }));
+}
+let mode = "store"; // склад по умолчанию
+
+async function switchMode(newMode) {
+    mode = newMode;
+    if (mode === "store") {
+        await renderCatalog();
+        loadOrder();
+    } else if (mode === "vegetables") {
+        const vegCatalog = await loadVegetableCatalog();
+        renderVegetableCatalog(vegCatalog);
+        loadOrder();
+    }
+}
 let order = {};
 let catalogData = {};
 let locked = {};
