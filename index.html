@@ -106,19 +106,19 @@ async function loadVegetableCatalog() {
         unit: row["Ед.изм"]
     }));
 }
-let mode = "store"; // склад по умолчанию
+// let mode = "store"; // склад по умолчанию
 
-async function switchMode(newMode) {
-    mode = newMode;
-    if (mode === "store") {
-        await renderCatalog();
-        loadOrder();
-    } else if (mode === "vegetables") {
-        const vegCatalog = await loadVegetableCatalog();
-        renderVegetableCatalog(vegCatalog);
-        loadOrder();
-    }
-}
+// async function switchMode(newMode) {
+//     mode = newMode;
+//     if (mode === "store") {
+//         await renderCatalog();
+//         loadOrder();
+//     } else if (mode === "vegetables") {
+//         const vegCatalog = await loadVegetableCatalog();
+//         renderVegetableCatalog(vegCatalog);
+//         loadOrder();
+//     }
+// }
 
 let order = {};
 let catalogData = {};
