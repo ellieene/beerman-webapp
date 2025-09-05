@@ -122,13 +122,15 @@ const BOT_TOKEN = "8416977089:AAG49nmrwX1RuCSxJL3zlqaTgeLLa8jgs3Y";
 
 function sendOrderToTelegram(orderText) {
     const user = Telegram.WebApp.initDataUnsafe.user;
-    let chatId;
+    const userMap = {
+        "ellieene": "743849466",
+        "Aleksei_Aleksandrovich1": "380680905"
+        "Ed":"1596541382",
+    };
 
-    if (user.username === "ellieene") {
-        chatId = "743849466";
-    } else if (user.username === "Aleksei_Aleksandrovich1") {
-        chatId = "380680905";
-    } else {
+    let chatId = userMap[user.username] || user.id;
+
+    if (!chatId) {
         console.error("Неизвестный пользователь, сообщение не отправлено");
         return Promise.reject("Неизвестный пользователь");
     }
@@ -147,7 +149,11 @@ function sendOrderToTelegram(orderText) {
 
 function sendOrder() {
   let items = [];
-  items.push(`Едим вместе(Б2) \nКаменска 7\n\n`);
+  if (user.username === "ellieene" || user.username === "Aleksei_Aleksandrovich1") {
+      items.push(`Едим вместе(Б2) \nКаменска 7\n\n`);
+  } else if (user.username === "Ed") {
+      items.push(`Вокзальная площадь(Б1) \nВокзальная магистраль 1\n\n`);
+  }
 
   for (const category in catalogData) {
     catalogData[category].forEach(product => {
