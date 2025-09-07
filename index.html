@@ -128,7 +128,7 @@ function sendOrderToTelegram(orderText) {
         "Ed":"1596541382"
     };
 
-    let chatId = userMap[user.username] || user.id;
+    let chatId = userMap[user.username];
 
     if (!chatId) {
         console.error("Неизвестный пользователь, сообщение не отправлено");
