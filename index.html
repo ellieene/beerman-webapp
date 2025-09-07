@@ -122,16 +122,15 @@ const BOT_TOKEN = "8416977089:AAG49nmrwX1RuCSxJL3zlqaTgeLLa8jgs3Y";
 
 function sendOrderToTelegram(orderText) {
     const user = Telegram.WebApp.initDataUnsafe.user;
-    const userMap = {
-        "ellieene": "743849466",
-        "Aleksei_Aleksandrovich1": "380680905",
-        "Ed":"1596541382"
-    };
+    let chatId;
 
-    let chatId = user.id;
-    console.log(chatId)
-
-    if (!chatId) {
+    if (user.username === "ellieene") {
+        chatId = "743849466";
+    } else if (user.username === "Aleksei_Aleksandrovich1") {
+        chatId = "380680905";
+    } else if (user.username === "Ed") {
+        chatId = "1596541382";
+    } else  {
         console.error("Неизвестный пользователь, сообщение не отправлено");
         return Promise.reject("Неизвестный пользователь");
     }
