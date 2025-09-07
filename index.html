@@ -124,8 +124,8 @@ function sendOrderToTelegram(orderText) {
     const user = Telegram.WebApp.initDataUnsafe.user;
     const userMap = {
         "ellieene": "743849466",
-        "Aleksei_Aleksandrovich1": "380680905"
-        "Ed":"1596541382",
+        "Aleksei_Aleksandrovich1": "380680905",
+        "Ed":"1596541382"
     };
 
     let chatId = userMap[user.username] || user.id;
