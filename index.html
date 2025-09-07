@@ -189,58 +189,73 @@ async function renderCatalog() {
   const user = Telegram.WebApp.initDataUnsafe.user;
   const container = document.getElementById("catalog");
   const adminPanel = document.getElementById("admin-panel");
+  if (user != null) {
+      if (user && user.username === "ellieen") {
+          container.style.display = "none";
+          document.querySelector(".send-btn").style.display = "none";
+          adminPanel.style.display = "block";
 
-  if (user && user.username === "ellieen") {
-    container.style.display = "none";
-    document.querySelector(".send-btn").style.display = "none";
-    adminPanel.style.display = "block";
+          renderAdminCategories();
+          renderAdminProducts();
+      } else if (user.username === "ellieene" || user.username === "Aleksei_Aleksandrovich1" || user.username === "Ed") {
+          adminPanel.style.display = "none";
+          container.style.display = "block";
+          document.querySelector(".send-btn").style.display = "block";
 
-    renderAdminCategories();
-    renderAdminProducts();
-  } else if (user.username === "ellieene" || user.username === "Aleksei_Aleksandrovich1") {
-    adminPanel.style.display = "none";
+          container.innerHTML = "";
+          for (const category in catalogData) {
+              const h2 = document.createElement("h2");
+              h2.textContent = category;
+              container.appendChild(h2);
+
+              catalogData[category].forEach(product => {
+                  const div = document.createElement("div");
+                  div.className = "product";
+
+                  const nameSpan = document.createElement("span");
+                  nameSpan.className = "name";
+                  nameSpan.textContent = `${product.name} (${product.unit})`;
+
+                  const btns = document.createElement("div");
+                  btns.className = "btns";
+
+                  const minus = document.createElement("button");
+                  minus.textContent = "-";
+                  minus.onclick = () => update(product.name, -1);
+
+                  const count = document.createElement("span");
+                  count.id = product.name;
+                  count.textContent = "0";
+
+                  const plus = document.createElement("button");
+                  plus.textContent = "+";
+                  plus.onclick = () => update(product.name, 1);
+
+                  btns.appendChild(minus);
+                  btns.appendChild(count);
+                  btns.appendChild(plus);
+
+                  div.appendChild(nameSpan);
+                  div.appendChild(btns);
+
+                  container.appendChild(div);
+              });
+          }
+      }
+  } else {
+    const container = document.getElementById("catalog");
     container.style.display = "block";
-    document.querySelector(".send-btn").style.display = "block";
+    document.querySelector(".send-btn").style.display = "none";
+    adminPanel.style.display = "none";
 
-    container.innerHTML = "";
-    for (const category in catalogData) {
-      const h2 = document.createElement("h2");
-      h2.textContent = category;
-      container.appendChild(h2);
+    container.innerHTML = ""; // очищаем
+    const img = document.createElement("img");
+    img.src = "https://img-webcalypt.ru/img/thumb/lg/images/meme-templates/cDQV4DzT8v2N1ANOOZSOTO5vb3ElmkRp.jpg.jpg";
+    img.alt = "Обезьяна показывает жест";
+    img.width = 350;
+    img.height = 280;
 
-      catalogData[category].forEach(product => {
-        const div = document.createElement("div");
-        div.className = "product";
-
-        const nameSpan = document.createElement("span");
-        nameSpan.className = "name";
-        nameSpan.textContent = `${product.name} (${product.unit})`;
-
-        const btns = document.createElement("div");
-        btns.className = "btns";
-
-        const minus = document.createElement("button");
-        minus.textContent = "-";
-        minus.onclick = () => update(product.name, -1);
-
-        const count = document.createElement("span");
-        count.id = product.name;
-        count.textContent = "0";
-
-        const plus = document.createElement("button");
-        plus.textContent = "+";
-        plus.onclick = () => update(product.name, 1);
-
-        btns.appendChild(minus);
-        btns.appendChild(count);
-        btns.appendChild(plus);
-
-        div.appendChild(nameSpan);
-        div.appendChild(btns);
-
-        container.appendChild(div);
-      });
-    }
+    container.appendChild(img);
   }
 }
 
