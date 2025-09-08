@@ -142,7 +142,7 @@ function sendOrder() {
 
     if (user.username === "ellieene" || user.username === "Aleksei_Aleksandrovich1") {
         items.push(`Едим вместе(Б2) \nКаменска 7\n\n`);
-    } else if (user.id === "1596541382") {
+    } else if (user.id === 1596541382) {
         items.push(`Вокзальная площадь(Б1) \nВокзальная магистраль 1\n\n`);
     }
 
@@ -186,7 +186,7 @@ async function renderCatalog() {
 
       renderAdminCategories();
       renderAdminProducts();
-  } else if (user && (user.username === "ellieene" || user.username === "Aleksei_Aleksandrovich1" || user.id === "1596541382")) {
+  } else if (user && (user.username === "ellieene" || user.username === "Aleksei_Aleksandrovich1" || user.id === 1596541382)) {
       adminPanel.style.display = "none";
       container.style.display = "block";
       document.querySelector(".send-btn").style.display = "block";
