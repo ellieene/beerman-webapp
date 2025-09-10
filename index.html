@@ -144,7 +144,7 @@ function sendOrder() {
         items.push(`Едим вместе(Б2) \nКаменска 7\n\n`);
     } else if (user.id === 1596541382 || user.id === 1092288702) {
         items.push(`Вокзальная площадь(Б1) \nВокзальная магистраль 1\n\n`);
-    } else if (user.id === 1001983586) {
+    } else if (user.id === 1001983598) {
         items.push(`Ривер плейс(Б4) \nДобролюбова 2а\n\n`);
     }
 
@@ -188,7 +188,7 @@ async function renderCatalog() {
 
       renderAdminCategories();
       renderAdminProducts();
-  } else if (user && (user.username === "ellieene" || user.username === "Aleksei_Aleksandrovich1" || user.id === 1596541382 || user.id === 1092288702 || user.id === 1001983586)) {
+  } else if (user && (user.username === "ellieene" || user.username === "Aleksei_Aleksandrovich1" || user.id === 1596541382 || user.id === 1092288702 || user.id === 1001983598)) {
       adminPanel.style.display = "none";
       container.style.display = "block";
       document.querySelector(".send-btn").style.display = "block";
