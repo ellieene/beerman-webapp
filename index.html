@@ -6,12 +6,12 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-      /* --- Кнопка поиска --- */
+      /* --- Кнопка поиска (зелёная) --- */
       .search-btn {
           position: fixed;
           bottom: 20px;
           right: 20px;
-          background: #007bff;
+          background: #28a745; /* ✅ зелёная */
           color: white;
           border: none;
           border-radius: 50%;
@@ -21,6 +21,10 @@
           box-shadow: 0 4px 10px rgba(0,0,0,0.3);
           cursor: pointer;
           z-index: 999;
+          transition: background 0.2s ease;
+      }
+      .search-btn:hover {
+          background: #218838;
       }
 
       /* --- Окно поиска --- */
@@ -57,6 +61,17 @@
       }
       .search-results div:hover {
           background: #f0f0f0;
+      }
+
+      /* --- Подсветка найденного элемента --- */
+      @keyframes darkHighlight {
+          0% { background-color: #444; color: white; }
+          80% { background-color: #444; color: white; }
+          100% { background-color: white; color: black; }
+      }
+
+      .highlighted {
+          animation: darkHighlight 2s ease;
       }
     body { font-family: Arial; background: #f5f5f5; margin: 0; padding: 10px; }
     #beerman { color:#e74c3c; text-align:center; font-size: 30px; margin-bottom: 10px; }
@@ -200,6 +215,44 @@ function sendOrderToTelegram(orderText) {
         .then(res => res.json());
 }
 
+function sendOrder() {
+    const user = Telegram.WebApp.initDataUnsafe.user; // добавили
+    let items = [];
+
+    if (user.username === "ellieene" || user.id === 1293255597 || user.username === "Kalashik_1989") {
+        items.push(`Едим вместе(Б2) \nКаменска 7\n\n`);
+    } else if (user.id === 1596541382 || user.id === 1092288702) {
+        items.push(`Вокзальная площадь(Б1) \nВокзальная магистраль 1\n\n`);
+    } else if (user.id === 1001983598) {
+        items.push(`Ривер плейс(Б4) \nДобролюбова 2а\n\n`);
+    }
+
+    for (const category in catalogData) {
+        catalogData[category].forEach(product => {
+            if (order[product.name] > 0) {
+                items.push(`${product.name} - ${order[product.name]} ${product.unit.replace(/\d+/g, "").trim()}`);
+            }
+        });
+    }
+
+    if (items.length === 0) {
+        alert("Корзина пуста!");
+        return;
+    }
+
+    let message = items.join("\n");
+    sendOrderToTelegram(message)
+        .then(data => {
+            console.log("✅ Успех:", data);
+            localStorage.removeItem("beermanOrder");
+            Telegram.WebApp.close();
+        })
+        .catch(err => {
+            console.error("🚨 Ошибка:", err);
+            alert("Ошибка при отправке заказа 🚨");
+        });
+}
+
 // --- 🔍 Поиск ---
 function toggleSearch() {
     const box = document.getElementById("search-box");
@@ -237,47 +290,16 @@ function scrollToProduct(name) {
     const el = document.getElementById(name);
     if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
-        el.style.background = "#d1ecf1";
-        setTimeout(() => el.style.background = "", 1200);
+
+        // 🔦 Добавляем эффект затемнения на 2 секунды
+        const productBlock = el.closest(".product");
+        if (productBlock) {
+            productBlock.classList.add("highlighted");
+            setTimeout(() => {
+                productBlock.classList.remove("highlighted");
+            }, 2000);
+        }
     }
-}
-
-function sendOrder() {
-    const user = Telegram.WebApp.initDataUnsafe.user; // добавили
-    let items = [];
-
-    if (user.username === "ellieene" || user.id === 1293255597 || user.username === "Kalashik_1989") {
-        items.push(`Едим вместе(Б2) \nКаменска 7\n\n`);
-    } else if (user.id === 1596541382 || user.id === 1092288702) {
-        items.push(`Вокзальная площадь(Б1) \nВокзальная магистраль 1\n\n`);
-    } else if (user.id === 1001983598) {
-        items.push(`Ривер плейс(Б4) \nДобролюбова 2а\n\n`);
-    }
-
-    for (const category in catalogData) {
-        catalogData[category].forEach(product => {
-            if (order[product.name] > 0) {
-                items.push(`${product.name} - ${order[product.name]} ${product.unit.replace(/\d+/g, "").trim()}`);
-            }
-        });
-    }
-
-    if (items.length === 0) {
-        alert("Корзина пуста!");
-        return;
-    }
-
-    let message = items.join("\n");
-    sendOrderToTelegram(message)
-        .then(data => {
-            console.log("✅ Успех:", data);
-            localStorage.removeItem("beermanOrder");
-            Telegram.WebApp.close();
-        })
-        .catch(err => {
-            console.error("🚨 Ошибка:", err);
-            alert("Ошибка при отправке заказа 🚨");
-        });
 }
 
 async function renderCatalog() {
