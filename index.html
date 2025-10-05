@@ -154,7 +154,7 @@ function sendOrder() {
     for (const category in catalogData) {
         catalogData[category].forEach(product => {
             if (order[product.name] > 0) {
-                items.push(`${product.name} - ${order[product.name]} ${product.unit}`);
+                items.push(`${product.name} - ${order[product.name]} ${product.unit.replace(/\d+/g, "").trim()}`);
             }
         });
     }
