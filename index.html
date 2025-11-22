@@ -223,7 +223,7 @@ function sendOrder() {
     const user = Telegram.WebApp.initDataUnsafe.user; // добавили
     let items = [];
 
-    if (user.username === "ellieene" || user.id === 1293255597 || user.username === "Kalashik_1989") {
+    if (user.username === "ellieene" || user.id === 1293255597 || user.username === "Kalashik_1989" || user.id === 992762908) {
         items.push(`Едим вместе(Б2) \nКаменска 7\n\n`);
     } else if (user.id === 1596541382 || user.id === 1092288702) {
         items.push(`Вокзальная площадь(Б1) \nВокзальная магистраль 1\n\n`);
@@ -320,7 +320,7 @@ async function renderCatalog() {
 
       renderAdminCategories();
       renderAdminProducts();
-  } else if (user && (user.username === "ellieene" || user.id === 1293255597 || user.id === 1596541382 || user.id === 1092288702 || user.id === 1001983598 || user.username === "Kalashik_1989")) {
+  } else if (user && (user.username === "ellieene" || user.id === 1293255597 || user.id === 1596541382 || user.id === 1092288702 || user.id === 1001983598 || user.username === "Kalashik_1989" || user.id === 992762908)) {
       adminPanel.style.display = "none";
       container.style.display = "block";
       document.querySelector(".send-btn").style.display = "block";
